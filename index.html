@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>七夕快乐 · 浪漫星河</title>
+<style>
+  :root {
+    --pw: clamp(118px, 18vmin, 225px);
+    --ph: clamp(148px, 23vmin, 285px);
+    --rz: clamp(150px, 30vmin, 360px);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+  }
+
+  body {
+    overflow: hidden;
+    font-family: "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, sans-serif;
+    color: #fff;
+    background:
+      radial-gradient(1200px 800px at 50% 28%, #43132f 0%, #24103a 48%, #080312 100%);
+    user-select: none;
+  }
+
+  .white-cover {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: #fff;
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity 0.9s ease;
+  }
+
+  .white-cover.hidden {
+    opacity: 0;
+  }
+
+  #hearts {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .stage {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .ring-scene {
+    position: absolute;
+    left: 50%;
+    top: 50vh;
+    width: 0;
+    height: 0;
+    perspective: 1500px;
+    transform-style: preserve-3d;
+  }
+
+  .ring {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(-14deg);
+    animation: ring-rotate 20s linear 2s infinite;
+  }
+
+  @keyframes ring-rotate {
+    from { transform: rotateX(-14deg) rotateY(0deg); }
+    to { transform: rotateX(-14deg) rotateY(360deg); }
+  }
+
+  .photo-wrap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--pw);
+    height: var(--ph);
+    margin-left: calc(var(--pw) / -2);
+    margin-top: calc(var(--ph) / -2);
+    transform: rotateY(var(--a)) translateZ(var(--rz));
+    transform-style: preserve-3d;
+  }
+
+  .photo-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .photo-face.back {
+    transform: rotateY(180deg);
+  }
+
+  .photo-card {
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.7);
+    box-shadow:
+      0 18px 45px rgba(0, 0, 0, 0.45),
+      0 0 35px rgba(255, 105, 145, 0.45);
+    opacity: 0;
+    animation: fadein 0.9s ease var(--fd) forwards;
+  }
+
+  .photo-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-in-right {
+    from { transform: translateX(80px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  .heart-particle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 3;
+    width: clamp(190px, 27vmin, 310px);
+    height: clamp(168px, 22vmin, 260px);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  #heartCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .heart-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transform: translateY(-5%);
+    font-family: "华文行楷", "STXingkai", "楷体", "KaiTi", "华文隶书", "STLiti", cursive;
+    font-size: clamp(20px, 3vmin, 30px);
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.05em;
+    text-shadow:
+      0 0 10px rgba(255, 120, 160, 0.9),
+      0 0 24px rgba(255, 80, 120, 0.6);
+  }
+
+  .panel {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 10;
+    width: min(300px, calc(100vw - 44px));
+    padding: 18px 16px 16px;
+    border-radius: 18px;
+    background: rgba(30, 10, 34, 0.62);
+    border: 1px solid rgba(255, 140, 175, 0.35);
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .panel label {
+    display: block;
+    margin: 0 0 8px;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .panel select,
+  .panel input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .panel select:focus,
+  .panel input:focus {
+    border-color: rgba(255, 120, 165, 0.85);
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  .panel select option {
+    color: #26101f;
+  }
+
+  .panel input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .send-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: linear-gradient(135deg, #ff6f91 0%, #ff3d68 55%, #e5335d 100%);
+    box-shadow: 0 8px 24px rgba(255, 61, 104, 0.5);
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+
+  .send-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255, 61, 104, 0.65);
+  }
+
+  .send-btn:active {
+    transform: translateY(0);
+  }
+
+  .music-toggle {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 11;
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    background: rgba(30, 10, 34, 0.55);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .music-toggle:hover {
+    background: rgba(50, 15, 50, 0.75);
+    border-color: rgba(255, 140, 175, 0.6);
+  }
+
+  .mascot {
+    position: fixed;
+    left: 12px;
+    bottom: 10px;
+    z-index: 51;
+    width: 130px;
+    height: 164px;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
+    animation: mascot-wave 2s ease-in-out infinite;
+  }
+
+  .mascot svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .mascot svg .m-line {
+    stroke-dasharray: 500;
+    stroke-dashoffset: 500;
+    animation: draw-line 0.4s ease forwards;
+    animation-delay: var(--d);
+  }
+
+  .mascot svg .m-fill {
+    opacity: 0;
+    animation: fadein 0.25s ease forwards;
+    animation-delay: var(--d);
+  }
+
+  @keyframes draw-line {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes mascot-wave {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-4px) rotate(3deg); }
+  }
+
+  .biu-heart {
+    position: fixed;
+    left: 62px;
+    bottom: 74px;
+    z-index: 13;
+    font-size: 18px;
+    pointer-events: none;
+    animation: biu-fly 1.1s ease-out forwards;
+  }
+
+  .biu-heart .biu-text {
+    position: absolute;
+    left: 20px;
+    top: -6px;
+    font-size: 12px;
+    color: #ffe3ec;
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(255, 120, 160, 0.9);
+  }
+
+  @keyframes biu-fly {
+    0% { transform: translate(0, 0) scale(0.6); opacity: 1; }
+    15% { transform: translate(8px, -18px) scale(1); opacity: 1; }
+    100% { transform: translate(170px, -260px) scale(0.9); opacity: 0; }
+  }
+
+  .blessing-float {
+    position: fixed;
+    left: var(--sx);
+    bottom: 7%;
+    z-index: 12;
+    font-size: var(--size);
+    font-weight: 700;
+    color: #fff;
+    max-width: 92vw;
+    white-space: normal;
+    word-break: break-word;
+    text-align: center;
+    line-height: 1.25;
+    pointer-events: none;
+    text-shadow:
+      0 0 12px rgba(255, 90, 135, 0.9),
+      0 0 30px rgba(255, 70, 120, 0.65);
+    animation: floatUp var(--dur) ease-out forwards;
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--dx), -108vh) scale(1.05);
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+<body>
+  <div id="white-cover" class="white-cover"></div>
+  <canvas id="hearts"></canvas>
+
+  <div class="stage">
+    <div class="ring-scene">
+      <div class="ring">
+        <div class="photo-wrap" style="--a:0deg; --fd:2s;">
+          <div class="photo-face"><div class="photo-card"><img src="1.png" alt="照片1"></div></div>
+          <div class="photo-face back"><div class="photo-card"><img src="1.png" alt="照片1"></div></div>
+        </div>
+        <div class="photo-wrap" style="--a:72deg; --fd:3.5s;">
+          <div class="photo-face"><div class="photo-card"><img src="2.png" alt="照片2"></div></div>
+          <div class="photo-face back"><div class="photo-card"><img src="2.png" alt="照片2"></div></div>
+        </div>
+        <div class="photo-wrap" style="--a:144deg; --fd:5s;">
+          <div class="photo-face"><div class="photo-card"><img src="3.png" alt="照片3"></div></div>
+          <div class="photo-face back"><div class="photo-card"><img src="3.png" alt="照片3"></div></div>
+        </div>
+        <div class="photo-wrap" style="--a:216deg; --fd:6.5s;">
+          <div class="photo-face"><div class="photo-card"><img src="4.png" alt="照片4"></div></div>
+          <div class="photo-face back"><div class="photo-card"><img src="4.png" alt="照片4"></div></div>
+        </div>
+        <div class="photo-wrap" style="--a:288deg; --fd:8s;">
+          <div class="photo-face"><div class="photo-card"><img src="5.jpg" alt="照片5"></div></div>
+          <div class="photo-face back"><div class="photo-card"><img src="5.jpg" alt="照片5"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="heart-particle">
+      <canvas id="heartCanvas"></canvas>
+      <div class="heart-text">七夕快乐 🥰</div>
+    </div>
+  </div>
+
+  <audio id="bgm" src="偏爱.mp3" loop preload="auto" autoplay></audio>
+
+  <button id="music-toggle" class="music-toggle">🎵 播放音乐</button>
+
+  <div class="mascot" id="mascot">
+    <svg viewBox="0 0 120 150" aria-hidden="true">
+      <circle class="m-line" style="--d:0s" cx="60" cy="38" r="22" fill="none" stroke="#ffd6e0" stroke-width="4"/>
+      <path class="m-line" style="--d:.2s" d="M42 30 Q60 12 78 30" fill="none" stroke="#ffd6e0" stroke-width="4" stroke-linecap="round"/>
+      <path class="m-line" style="--d:.35s" d="M47 21 Q60 11 73 21" fill="none" stroke="#ffd6e0" stroke-width="3" stroke-linecap="round"/>
+      <path class="m-line" style="--d:.5s" d="M60 60 L60 100" stroke="#ffd6e0" stroke-width="4" stroke-linecap="round"/>
+      <path class="m-line" style="--d:.7s" d="M60 68 L38 88" stroke="#ffd6e0" stroke-width="4" stroke-linecap="round"/>
+      <path class="m-line" style="--d:.85s" d="M60 68 L84 44" stroke="#ffd6e0" stroke-width="4" stroke-linecap="round"/>
+      <path class="m-line" style="--d:1s" d="M60 100 L44 128" stroke="#ffd6e0" stroke-width="4" stroke-linecap="round"/>
+      <path class="m-line" style="--d:1.15s" d="M60 100 L76 128" stroke="#ffd6e0" stroke-width="4" stroke-linecap="round"/>
+      <path class="m-line" style="--d:1.3s" d="M52 45 Q60 52 68 45" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+      <circle class="m-fill" style="--d:1.5s" cx="52" cy="34" r="2.2" fill="#fff"/>
+      <circle class="m-fill" style="--d:1.5s" cx="68" cy="34" r="2.2" fill="#fff"/>
+      <path class="m-fill" style="--d:1.7s" d="M86 42 C81 36 76 33 74 36 C72 39 75 45 86 52 C97 45 100 39 98 36 C96 33 91 36 86 42 Z" fill="#ff5c77"/>
+    </svg>
+  </div>
+
+  <div class="panel">
+    <label for="blessing">祝福留言</label>
+    <select id="blessing">
+      <option>七夕快乐，愿你被爱包围 ❤️</option>
+      <option>愿有岁月可回首，且以深情共白头</option>
+      <option>喜欢你，是藏在心里的光 ✨</option>
+      <option>星河滚烫，你是人间理想</option>
+      <option>往后余生，全都是你</option>
+      <option>愿我们岁岁常相见，年年共此时</option>
+      <option>遇见你，是最美的意外 💕</option>
+      <option>愿得一人心，白首不分离</option>
+    </select>
+    <input id="custom" type="text" maxlength="40" placeholder="或输入自定义祝福…">
+    <button class="send-btn" id="send">发送祝福 ❤</button>
+  </div>
+
+  <script>
+    // 铺满屏幕的下落元素：偏长深红爱心 + 竖排 LOVE
+    const canvas = document.getElementById("hearts");
+    const ctx = canvas.getContext("2d");
+    let W, H;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    // 白屏开场：小人画完、第一张照片出现时（约 2s）淡出白屏，场景随之显现
+    const cover = document.getElementById("white-cover");
+    setTimeout(() => cover.classList.add("hidden"), 2000);
+
+    const heartColors = ["#a4161a", "#c1121f", "#8e0e16", "#d62839"];
+    const items = [];
+
+    function drawHeart(x, y, w, h, color, alpha) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(0, 0.9);
+      ctx.bezierCurveTo(-1.0, 0.2, -0.8, -0.9, 0, -0.35);
+      ctx.bezierCurveTo(0.8, -0.9, 1.0, 0.2, 0, 0.9);
+      ctx.closePath();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawLoveVertical(x, y, size, alpha) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = "#ff9eb5";
+      ctx.font = "bold " + size + "px 'Segoe Script', 'Lucida Handwriting', 'Brush Script MT', cursive";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const letters = ["L", "O", "V", "E"];
+      const gap = size * 1.15;
+      const top = y - (gap * 3) / 2;
+      for (let i = 0; i < letters.length; i++) {
+        ctx.fillText(letters[i], x, top + i * gap);
+      }
+      ctx.restore();
+    }
+
+    function makeItem(y) {
+      if (Math.random() < 0.86) {
+        const w = 8 + Math.random() * 13;
+        return {
+          type: "heart",
+          x: Math.random() * W,
+          y: y,
+          w: w,
+          h: w * 1.55,
+        speed: 2.2 + Math.random() * 3.6,
+          opacity: 0.4 + Math.random() * 0.6,
+          color: heartColors[Math.floor(Math.random() * heartColors.length)]
+        };
+      } else {
+        return {
+          type: "love",
+          x: Math.random() * W,
+          y: y,
+          size: 13 + Math.random() * 10,
+        speed: 1.8 + Math.random() * 2.8,
+          opacity: 0.5 + Math.random() * 0.5
+        };
+      }
+    }
+
+    for (let i = 0; i < 380; i++) {
+      items.push(makeItem(Math.random() * H));
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, W, H);
+      for (const it of items) {
+        it.y += it.speed;
+        if (it.type === "heart") {
+          drawHeart(it.x, it.y, it.w, it.h, it.color, it.opacity);
+        } else {
+          drawLoveVertical(it.x, it.y, it.size, it.opacity);
+        }
+        if (it.y > H + 120) {
+          Object.assign(it, makeItem(-80));
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+    setTimeout(() => requestAnimationFrame(tick), 2000);
+
+    // 粒子爱心：由许多小粒子组成，微微闪烁
+    const heartCanvas = document.getElementById("heartCanvas");
+    const hctx = heartCanvas.getContext("2d");
+    const particleColors = ["#ff4d6d", "#ff5c77", "#ff8fa3", "#e5383b", "#ffb3c1", "#ffffff"];
+    let heartParticles = [];
+
+    function heartPathInCanvas(w, h) {
+      const p = new Path2D();
+      const cx = w / 2;
+      const cy = h / 2;
+      const sx = w / 2.2;
+      const sy = h / 2.1;
+      p.moveTo(cx, cy + 0.85 * sy);
+      p.bezierCurveTo(cx - 1.0 * sx, cy + 0.15 * sy, cx - 0.85 * sx, cy - 0.95 * sy, cx, cy - 0.25 * sy);
+      p.bezierCurveTo(cx + 0.85 * sx, cy - 0.95 * sy, cx + 1.0 * sx, cy + 0.15 * sy, cx, cy + 0.85 * sy);
+      p.closePath();
+      return p;
+    }
+
+    function buildHeartParticles(w, h) {
+      const p = heartPathInCanvas(w, h);
+      heartParticles = [];
+      let guard = 0;
+      while (heartParticles.length < 750 && guard < 100000) {
+        guard++;
+        const x = Math.random() * w;
+        const y = Math.random() * h;
+        if (hctx.isPointInPath(p, x, y)) {
+          heartParticles.push({
+            x: x,
+            y: y,
+            r: 0.8 + Math.random() * 1.6,
+            phase: Math.random() * Math.PI * 2,
+            color: particleColors[Math.floor(Math.random() * particleColors.length)]
+          });
+        }
+      }
+    }
+
+    function resizeHeartCanvas() {
+      const rect = heartCanvas.getBoundingClientRect();
+      heartCanvas.width = Math.max(1, Math.round(rect.width));
+      heartCanvas.height = Math.max(1, Math.round(rect.height));
+      buildHeartParticles(heartCanvas.width, heartCanvas.height);
+    }
+    window.addEventListener("resize", resizeHeartCanvas);
+    resizeHeartCanvas();
+
+    function heartTick(t) {
+      const w = heartCanvas.width;
+      const h = heartCanvas.height;
+      hctx.clearRect(0, 0, w, h);
+      for (const p of heartParticles) {
+        const a = 0.3 + 0.65 * (0.5 + 0.5 * Math.sin(t / 500 + p.phase));
+        const jx = Math.sin(t / 900 + p.phase) * 0.8;
+        const jy = Math.cos(t / 700 + p.phase * 1.3) * 0.8;
+        hctx.globalAlpha = a;
+        hctx.fillStyle = p.color;
+        hctx.beginPath();
+        hctx.arc(p.x + jx, p.y + jy, p.r, 0, Math.PI * 2);
+        hctx.fill();
+      }
+      hctx.globalAlpha = 1;
+      requestAnimationFrame(heartTick);
+    }
+    setTimeout(() => requestAnimationFrame(heartTick), 2000);
+
+    // 音乐：尝试自动播放，若浏览器拦截则在第一次点击时播放
+    const audio = document.getElementById("bgm");
+    const musicBtn = document.getElementById("music-toggle");
+    audio.volume = 0.45;
+
+    function playMusic() {
+      const p = audio.play();
+      if (p && p.catch) p.catch(() => {});
+      musicBtn.textContent = "🔊 音乐中";
+    }
+
+    playMusic();
+
+    document.addEventListener("pointerdown", () => {
+      if (audio.paused) {
+        audio.play().then(() => {
+          musicBtn.textContent = "🔊 音乐中";
+        }).catch(() => {});
+      }
+    });
+
+    musicBtn.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+      if (audio.paused) {
+        audio.play().then(() => {
+          musicBtn.textContent = "🔊 音乐中";
+        }).catch(() => {});
+      } else {
+        audio.pause();
+        musicBtn.textContent = "🎵 播放音乐";
+      }
+    });
+
+    // 左下角小人发射 biu 爱心
+    function shootBiu() {
+      const el = document.createElement("div");
+      el.className = "biu-heart";
+      el.innerHTML = '<span class="biu-heart-emoji">❤️</span><span class="biu-text">biu!</span>';
+      document.body.appendChild(el);
+      el.addEventListener("animationend", () => el.remove());
+    }
+    shootBiu();
+    setInterval(shootBiu, 1400);
+
+    // 发送祝福语，完整显示并飘在屏幕上
+    const sendBtn = document.getElementById("send");
+    const select = document.getElementById("blessing");
+    const custom = document.getElementById("custom");
+
+    function sendBlessing() {
+      const text = (custom.value.trim() || select.value).trim();
+      if (!text) return;
+
+      const el = document.createElement("div");
+      el.className = "blessing-float";
+      el.textContent = text;
+      el.style.setProperty("--sx", (8 + Math.random() * 68) + "vw");
+      el.style.setProperty("--dx", (Math.random() * 260 - 130) + "px");
+      el.style.setProperty("--dur", (6 + Math.random() * 4) + "s");
+      el.style.setProperty("--size", (14 + Math.random() * 8) + "px");
+      document.body.appendChild(el);
+      el.addEventListener("animationend", () => el.remove());
+
+      custom.value = "";
+    }
+
+    sendBtn.addEventListener("click", sendBlessing);
+    custom.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendBlessing();
+    });
+  </script>
+</body>
+</html>
