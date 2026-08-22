@@ -405,7 +405,7 @@
     </div>
   </div>
 
-  <audio id="bgm" src="偏爱.mp3" loop preload="auto" autoplay></audio>
+  <audio id="bgm" src="偏爱.mp3" loop preload="auto"></audio>
 
   <button id="music-toggle" class="music-toggle">🎵 播放音乐</button>
 
@@ -606,33 +606,54 @@
     }
     setTimeout(() => requestAnimationFrame(heartTick), 2000);
 
-    // 音乐：尝试自动播放，若浏览器拦截则在第一次点击时播放
+    // 音乐：等白屏约 2 秒后变成爱心画面时，自动开始播放
     const audio = document.getElementById("bgm");
     const musicBtn = document.getElementById("music-toggle");
     audio.volume = 0.45;
 
-    function playMusic() {
-      const p = audio.play();
-      if (p && p.catch) p.catch(() => {});
+    function markPlaying() {
       musicBtn.textContent = "🔊 音乐中";
     }
 
-    playMusic();
+    function playWithSound() {
+      audio.muted = false;
+      const p = audio.play();
+      if (p && p.catch) {
+        p.then(markPlaying).catch(() => {
+          // 浏览器禁止有声自动播放时，先静音播放以保持画面同步
+          audio.muted = true;
+          audio.play().then(() => {
+            // 再尝试取消静音；部分浏览器仍会要求用户先点击一次
+            setTimeout(() => {
+              audio.muted = false;
+              if (audio.paused) {
+                audio.play().then(markPlaying).catch(() => {});
+              } else if (!audio.muted) {
+                markPlaying();
+              }
+            }, 150);
+          }).catch(() => {});
+        });
+      } else {
+        markPlaying();
+      }
+    }
+
+    // 白屏淡出（约 2s）和爱心画面出现是同一时间点
+    setTimeout(playWithSound, 2000);
 
     document.addEventListener("pointerdown", () => {
-      if (audio.paused) {
-        audio.play().then(() => {
-          musicBtn.textContent = "🔊 音乐中";
-        }).catch(() => {});
+      if (audio.paused || audio.muted) {
+        audio.muted = false;
+        audio.play().then(markPlaying).catch(() => {});
       }
     });
 
     musicBtn.addEventListener("pointerdown", (e) => {
       e.stopPropagation();
       if (audio.paused) {
-        audio.play().then(() => {
-          musicBtn.textContent = "🔊 音乐中";
-        }).catch(() => {});
+        audio.muted = false;
+        audio.play().then(markPlaying).catch(() => {});
       } else {
         audio.pause();
         musicBtn.textContent = "🎵 播放音乐";
