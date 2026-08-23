@@ -73,6 +73,7 @@
     width: 0;
     height: 0;
     transform-style: preserve-3d;
+    will-change: transform;
     transform: rotateX(-14deg);
     animation: ring-rotate 20s linear 2s infinite;
   }
@@ -92,6 +93,7 @@
     margin-top: calc(var(--ph) / -2);
     transform: rotateY(var(--a)) translateZ(var(--rz));
     transform-style: preserve-3d;
+    will-change: transform;
   }
 
   .photo-face {
@@ -140,8 +142,8 @@
     left: 50%;
     top: 50%;
     z-index: 3;
-    width: clamp(190px, 27vmin, 310px);
-    height: clamp(168px, 22vmin, 260px);
+    width: clamp(300px, 50vmin, 620px);
+    height: clamp(280px, 43vmin, 540px);
     transform: translate(-50%, -50%);
     pointer-events: none;
   }
@@ -162,88 +164,112 @@
     text-align: center;
     transform: translateY(-5%);
     font-family: "华文行楷", "STXingkai", "楷体", "KaiTi", "华文隶书", "STLiti", cursive;
-    font-size: clamp(20px, 3vmin, 30px);
-    font-weight: 600;
-    color: #fff;
-    letter-spacing: 0.05em;
-    text-shadow:
-      0 0 10px rgba(255, 120, 160, 0.9),
-      0 0 24px rgba(255, 80, 120, 0.6);
+    font-size: clamp(26px, 5vmin, 48px);
+    font-weight: 800;
+    gap: 0.08em;
   }
 
-  .panel {
+  .heart-char {
+    display: inline-block;
+    position: relative;
+    background: linear-gradient(110deg, #ffffff 0%, #eef8ff 20%, #cfeaff 38%, #9ed8ff 55%, #d7ecff 74%, #ffffff 100%);
+    background-size: 100% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter:
+      drop-shadow(-1px 0 0 rgba(0, 0, 0, 0.62))
+      drop-shadow(1px 0 0 rgba(0, 0, 0, 0.62))
+      drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.62))
+      drop-shadow(0 1px 0 rgba(0, 0, 0, 0.62))
+      drop-shadow(0 0 6px rgba(235, 250, 255, 0.85))
+      drop-shadow(0 0 16px rgba(140, 210, 255, 0.5))
+      drop-shadow(0 0 28px rgba(170, 220, 255, 0.22));
+    opacity: 0;
+    animation: heart-char-appear 0.55s ease var(--d) both;
+  }
+
+  @keyframes heart-char-appear {
+    0% { transform: scale(0.82); opacity: 0; }
+    100% { transform: scale(1); opacity: 0.78; }
+  }
+
+  .headline {
     position: fixed;
-    right: 22px;
-    bottom: 22px;
-    z-index: 10;
-    width: min(300px, calc(100vw - 44px));
-    padding: 18px 16px 16px;
-    border-radius: 18px;
-    background: rgba(30, 10, 34, 0.62);
-    border: 1px solid rgba(255, 140, 175, 0.35);
-    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    top: 9vh;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    padding: 0 16px;
+    pointer-events: none;
   }
 
-  .panel label {
-    display: block;
-    margin: 0 0 8px;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.85);
-  }
-
-  .panel select,
-  .panel input {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 11px 12px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s, background 0.2s;
-  }
-
-  .panel select:focus,
-  .panel input:focus {
-    border-color: rgba(255, 120, 165, 0.85);
-    background: rgba(255, 255, 255, 0.16);
-  }
-
-  .panel select option {
-    color: #26101f;
-  }
-
-  .panel input::placeholder {
-    color: rgba(255, 255, 255, 0.55);
-  }
-
-  .send-btn {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 999px;
-    cursor: pointer;
-    font-size: 16px;
+  .headline .seg {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    margin: 0 0.06em;
+    font-family: "华文行楷", "STXingkai", "楷体", "KaiTi", "华文隶书", "STLiti", cursive;
+    font-size: clamp(26px, 5.2vmin, 56px);
     font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #fff;
-    background: linear-gradient(135deg, #ff6f91 0%, #ff3d68 55%, #e5335d 100%);
-    box-shadow: 0 8px 24px rgba(255, 61, 104, 0.5);
-    transition: transform 0.15s, box-shadow 0.2s;
+    letter-spacing: 0.03em;
+    background: linear-gradient(110deg, #ffffff 0%, #eef8ff 20%, #cfeaff 38%, #9ed8ff 55%, #d7ecff 74%, #ffffff 100%);
+    background-size: 100% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 7px rgba(235, 250, 255, 0.95)) drop-shadow(0 0 20px rgba(140, 210, 255, 0.6)) drop-shadow(0 0 34px rgba(170, 220, 255, 0.22));
+    animation: seg-appear 0.6s ease var(--delay) both;
   }
 
-  .send-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(255, 61, 104, 0.65);
+  .headline .space {
+    flex: none;
+    font-size: clamp(26px, 5.2vmin, 56px);
+    white-space: pre;
   }
 
-  .send-btn:active {
-    transform: translateY(0);
+  .headline.bottom {
+    top: auto;
+    bottom: 7vh;
+  }
+
+  .headline.bottom .seg {
+    font-size: clamp(26px, 5.2vmin, 56px);
+  }
+
+  .headline.bottom .space {
+    font-size: clamp(26px, 5.2vmin, 56px);
+  }
+
+  @keyframes seg-appear {
+    0% { transform: scale(0.82); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .spark {
+    position: fixed;
+    z-index: 10;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background: var(--color);
+    box-shadow: 0 0 9px 2px var(--color);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    animation: spark-fly var(--dur) ease-out var(--delay) forwards;
+  }
+
+  @keyframes spark-fly {
+    0% { transform: translate(-50%, -50%) scale(0.35); opacity: 0; }
+    18% { opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.75); opacity: 0; }
   }
 
   .music-toggle {
@@ -334,39 +360,6 @@
     100% { transform: translate(170px, -260px) scale(0.9); opacity: 0; }
   }
 
-  .blessing-float {
-    position: fixed;
-    left: var(--sx);
-    bottom: 7%;
-    z-index: 12;
-    font-size: var(--size);
-    font-weight: 700;
-    color: #fff;
-    max-width: 92vw;
-    white-space: normal;
-    word-break: break-word;
-    text-align: center;
-    line-height: 1.25;
-    pointer-events: none;
-    text-shadow:
-      0 0 12px rgba(255, 90, 135, 0.9),
-      0 0 30px rgba(255, 70, 120, 0.65);
-    animation: floatUp var(--dur) ease-out forwards;
-  }
-
-  @keyframes floatUp {
-    0% {
-      transform: translate(0, 0) scale(1);
-      opacity: 1;
-    }
-    70% {
-      opacity: 1;
-    }
-    100% {
-      transform: translate(var(--dx), -108vh) scale(1.05);
-      opacity: 0;
-    }
-  }
 </style>
 </head>
 <body>
@@ -380,30 +373,37 @@
           <div class="photo-face"><div class="photo-card"><img src="1.png" alt="照片1"></div></div>
           <div class="photo-face back"><div class="photo-card"><img src="1.png" alt="照片1"></div></div>
         </div>
-        <div class="photo-wrap" style="--a:72deg; --fd:3.5s;">
-          <div class="photo-face"><div class="photo-card"><img src="2.png" alt="照片2"></div></div>
-          <div class="photo-face back"><div class="photo-card"><img src="2.png" alt="照片2"></div></div>
+        <div class="photo-wrap" style="--a:60deg; --fd:2.8s;">
+          <div class="photo-face"><div class="photo-card"><img src="2.jpg" alt="照片2"></div></div>
+          <div class="photo-face back"><div class="photo-card"><img src="2.jpg" alt="照片2"></div></div>
         </div>
-        <div class="photo-wrap" style="--a:144deg; --fd:5s;">
+        <div class="photo-wrap" style="--a:120deg; --fd:3.6s;">
           <div class="photo-face"><div class="photo-card"><img src="3.png" alt="照片3"></div></div>
           <div class="photo-face back"><div class="photo-card"><img src="3.png" alt="照片3"></div></div>
         </div>
-        <div class="photo-wrap" style="--a:216deg; --fd:6.5s;">
-          <div class="photo-face"><div class="photo-card"><img src="4.png" alt="照片4"></div></div>
-          <div class="photo-face back"><div class="photo-card"><img src="4.png" alt="照片4"></div></div>
+        <div class="photo-wrap" style="--a:180deg; --fd:4.4s;">
+          <div class="photo-face"><div class="photo-card"><img src="4.jpg" alt="照片4"></div></div>
+          <div class="photo-face back"><div class="photo-card"><img src="4.jpg" alt="照片4"></div></div>
         </div>
-        <div class="photo-wrap" style="--a:288deg; --fd:8s;">
-          <div class="photo-face"><div class="photo-card"><img src="5.jpg" alt="照片5"></div></div>
-          <div class="photo-face back"><div class="photo-card"><img src="5.jpg" alt="照片5"></div></div>
+        <div class="photo-wrap" style="--a:240deg; --fd:5.2s;">
+          <div class="photo-face"><div class="photo-card"><img src="5.png" alt="照片5"></div></div>
+          <div class="photo-face back"><div class="photo-card"><img src="5.png" alt="照片5"></div></div>
+        </div>
+        <div class="photo-wrap" style="--a:300deg; --fd:6s;">
+          <div class="photo-face"><div class="photo-card"><img src="6.png" alt="照片6"></div></div>
+          <div class="photo-face back"><div class="photo-card"><img src="6.png" alt="照片6"></div></div>
         </div>
       </div>
     </div>
 
     <div class="heart-particle">
       <canvas id="heartCanvas"></canvas>
-      <div class="heart-text">七夕快乐 🥰</div>
+      <div class="heart-text" id="heart-text"></div>
     </div>
   </div>
+
+  <div class="headline" id="headline"></div>
+  <div class="headline bottom" id="headline-bottom"></div>
 
   <audio id="bgm" src="偏爱.mp3" loop preload="auto"></audio>
 
@@ -426,22 +426,6 @@
     </svg>
   </div>
 
-  <div class="panel">
-    <label for="blessing">祝福留言</label>
-    <select id="blessing">
-      <option>七夕快乐，愿你被爱包围 ❤️</option>
-      <option>愿有岁月可回首，且以深情共白头</option>
-      <option>喜欢你，是藏在心里的光 ✨</option>
-      <option>星河滚烫，你是人间理想</option>
-      <option>往后余生，全都是你</option>
-      <option>愿我们岁岁常相见，年年共此时</option>
-      <option>遇见你，是最美的意外 💕</option>
-      <option>愿得一人心，白首不分离</option>
-    </select>
-    <input id="custom" type="text" maxlength="40" placeholder="或输入自定义祝福…">
-    <button class="send-btn" id="send">发送祝福 ❤</button>
-  </div>
-
   <script>
     // 铺满屏幕的下落元素：偏长深红爱心 + 竖排 LOVE
     const canvas = document.getElementById("hearts");
@@ -460,41 +444,148 @@
     setTimeout(() => cover.classList.add("hidden"), 2000);
 
     const heartColors = ["#a4161a", "#c1121f", "#8e0e16", "#d62839"];
+    const snowColors = ["#ffffff", "#eaf6ff", "#d8efff", "#cfe7ff"];
     const items = [];
 
-    function drawHeart(x, y, w, h, color, alpha) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(w / 2, h / 2);
-      ctx.beginPath();
-      ctx.moveTo(0, 0.9);
-      ctx.bezierCurveTo(-1.0, 0.2, -0.8, -0.9, 0, -0.35);
-      ctx.bezierCurveTo(0.8, -0.9, 1.0, 0.2, 0, 0.9);
-      ctx.closePath();
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = color;
-      ctx.fill();
-      ctx.restore();
+    const loveLetters = ["L", "O", "V", "E"];
+
+    function makeOffscreenCanvas(w, h) {
+      const c = document.createElement("canvas");
+      c.width = w;
+      c.height = h;
+      return c;
     }
 
-    function drawLoveVertical(x, y, size, alpha) {
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = "#ff9eb5";
-      ctx.font = "bold " + size + "px 'Segoe Script', 'Lucida Handwriting', 'Brush Script MT', cursive";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      const letters = ["L", "O", "V", "E"];
-      const gap = size * 1.15;
-      const top = y - (gap * 3) / 2;
-      for (let i = 0; i < letters.length; i++) {
-        ctx.fillText(letters[i], x, top + i * gap);
-      }
-      ctx.restore();
+    function buildHeartSprite(color) {
+      const s = 64;
+      const c = makeOffscreenCanvas(s, s);
+      const g = c.getContext("2d");
+      g.translate(s / 2, s / 2);
+      g.scale(s / 2, s / 2);
+      g.beginPath();
+      g.moveTo(0, 0.9);
+      g.bezierCurveTo(-1.0, 0.2, -0.8, -0.9, 0, -0.35);
+      g.bezierCurveTo(0.8, -0.9, 1.0, 0.2, 0, 0.9);
+      g.closePath();
+      g.fillStyle = color;
+      g.fill();
+      return c;
     }
+
+    function buildSnowSprite(color) {
+      const s = 64;
+      const c = makeOffscreenCanvas(s, s);
+      const g = c.getContext("2d");
+      const baseR = s * 0.38;
+      g.translate(s / 2, s / 2);
+      g.strokeStyle = color;
+      g.lineWidth = Math.max(1, baseR * 0.14);
+      g.lineCap = "round";
+      g.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI * 2 * i) / 6;
+        const dx = Math.cos(angle);
+        const dy = Math.sin(angle);
+        g.moveTo(0, 0);
+        g.lineTo(dx * baseR, dy * baseR);
+
+        const branch1 = angle + Math.PI / 6;
+        const branch2 = angle - Math.PI / 6;
+        g.moveTo(dx * baseR * 0.55, dy * baseR * 0.55);
+        g.lineTo(Math.cos(branch1) * baseR * 0.75, Math.sin(branch1) * baseR * 0.75);
+        g.moveTo(dx * baseR * 0.55, dy * baseR * 0.55);
+        g.lineTo(Math.cos(branch2) * baseR * 0.75, Math.sin(branch2) * baseR * 0.75);
+      }
+      g.stroke();
+      return c;
+    }
+
+    function buildLetterSprite(letter) {
+      const s = 80;
+      const c = makeOffscreenCanvas(s, s);
+      const g = c.getContext("2d");
+      g.fillStyle = "#ff9eb5";
+      g.font = "bold 58px 'Segoe Script', 'Lucida Handwriting', 'Brush Script MT', cursive";
+      g.textAlign = "center";
+      g.textBaseline = "middle";
+      g.fillText(letter, s / 2, s / 2);
+      return c;
+    }
+
+    const heartSprites = new Map(heartColors.map((color) => [color, buildHeartSprite(color)]));
+    const snowSprites = new Map(snowColors.map((color) => [color, buildSnowSprite(color)]));
+    const letterSprites = new Map(loveLetters.map((letter) => [letter, buildLetterSprite(letter)]));
+
+    function drawHeart(x, y, w, h, color, alpha) {
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(heartSprites.get(color), x - w / 2, y - h / 2, w, h);
+    }
+
+    function drawSnowflake(x, y, r, alpha, color) {
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(snowSprites.get(color), x - r, y - r, r * 2, r * 2);
+    }
+
+    let loveDrops = [];
+    const loveColGap = 50;
+    const dropsPerCol = 7;
+    let loveFontSize = 16;
+
+    function drawLoveLetter(letter, x, y, size, alpha) {
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(letterSprites.get(letter), x - size / 2, y - size / 2, size, size);
+    }
+
+    function initLoveDrops(startOffset) {
+      loveDrops = [];
+      loveFontSize = Math.max(14, Math.min(20, W / 55));
+      const cols = Math.max(1, Math.floor(W / loveColGap));
+      const spacing = W / cols;
+      const now = performance.now();
+      for (let i = 0; i < cols; i++) {
+        const x = spacing * (i + 0.5);
+        const speed = 2.2 + Math.random() * 1.4;
+        for (let k = 0; k < dropsPerCol; k++) {
+          loveDrops.push({
+            x: x,
+          y: loveFontSize + k * (H / dropsPerCol) + Math.random() * 35,
+          speed: speed,
+          size: loveFontSize + Math.random() * 3,
+          revealInterval: 200 + Math.random() * 80,
+          startTime: now + startOffset + Math.random() * 700
+        });
+      }
+      }
+    }
+
+    function updateLoveDrops(now) {
+      for (const drop of loveDrops) {
+        const elapsed = now - drop.startTime;
+        if (elapsed < 0) continue;
+
+        drop.y += drop.speed;
+        const gap = drop.size * 1.15;
+        const visible = Math.min(loveLetters.length, Math.floor(elapsed / drop.revealInterval) + 1);
+
+        for (let j = 0; j < visible; j++) {
+          const ly = drop.y + j * gap;
+          if (ly < -drop.size || ly > H + drop.size) continue;
+          drawLoveLetter(loveLetters[j], drop.x, ly, drop.size, 0.95);
+        }
+
+        if (drop.y > H + drop.size * 5) {
+          drop.y = -drop.size * 5 - Math.random() * 100;
+          drop.startTime = now + Math.random() * 300;
+          drop.revealInterval = 200 + Math.random() * 80;
+        }
+      }
+    }
+
+    window.addEventListener("resize", () => initLoveDrops(0));
+    initLoveDrops(2000);
 
     function makeItem(y) {
-      if (Math.random() < 0.86) {
+      if (Math.random() < 0.5) {
         const w = 8 + Math.random() * 13;
         return {
           type: "heart",
@@ -502,39 +593,53 @@
           y: y,
           w: w,
           h: w * 1.55,
-        speed: 2.2 + Math.random() * 3.6,
+          speed: 2.2 + Math.random() * 3.6,
           opacity: 0.4 + Math.random() * 0.6,
           color: heartColors[Math.floor(Math.random() * heartColors.length)]
         };
-      } else {
-        return {
-          type: "love",
-          x: Math.random() * W,
-          y: y,
-          size: 13 + Math.random() * 10,
-        speed: 1.8 + Math.random() * 2.8,
-          opacity: 0.5 + Math.random() * 0.5
-        };
       }
+
+      return {
+        type: "snow",
+        x: Math.random() * W,
+        y: y,
+        r: 5 + Math.random() * 7,
+        speed: 2.0 + Math.random() * 3.6,
+        opacity: 0.45 + Math.random() * 0.55,
+        color: snowColors[Math.floor(Math.random() * snowColors.length)]
+      };
     }
 
-    for (let i = 0; i < 380; i++) {
+    function desiredItemCount() {
+      return Math.max(90, Math.min(320, Math.floor((W * H) / 8500)));
+    }
+
+    function syncItemCount() {
+      const target = desiredItemCount();
+      while (items.length > target) items.pop();
+      while (items.length < target) items.push(makeItem(Math.random() * H));
+    }
+
+    for (let i = 0; i < desiredItemCount(); i++) {
       items.push(makeItem(Math.random() * H));
     }
+    window.addEventListener("resize", syncItemCount);
 
-    function tick() {
+    function tick(now) {
       ctx.clearRect(0, 0, W, H);
       for (const it of items) {
         it.y += it.speed;
         if (it.type === "heart") {
           drawHeart(it.x, it.y, it.w, it.h, it.color, it.opacity);
         } else {
-          drawLoveVertical(it.x, it.y, it.size, it.opacity);
+          drawSnowflake(it.x, it.y, it.r, it.opacity, it.color);
         }
         if (it.y > H + 120) {
           Object.assign(it, makeItem(-80));
         }
       }
+      updateLoveDrops(now || performance.now());
+      ctx.globalAlpha = 1;
       requestAnimationFrame(tick);
     }
     setTimeout(() => requestAnimationFrame(tick), 2000);
@@ -542,15 +647,15 @@
     // 粒子爱心：由许多小粒子组成，微微闪烁
     const heartCanvas = document.getElementById("heartCanvas");
     const hctx = heartCanvas.getContext("2d");
-    const particleColors = ["#ff4d6d", "#ff5c77", "#ff8fa3", "#e5383b", "#ffb3c1", "#ffffff"];
+    const particleColors = ["#ffffff", "#f5f0ff", "#e7c6ff", "#c8a2f8", "#9ed8ff", "#7fc8ff", "#ffd6e0", "#ff8fa3"];
     let heartParticles = [];
 
     function heartPathInCanvas(w, h) {
       const p = new Path2D();
       const cx = w / 2;
       const cy = h / 2;
-      const sx = w / 2.2;
-      const sy = h / 2.1;
+      const sx = w / 2.05;
+      const sy = h / 1.95;
       p.moveTo(cx, cy + 0.85 * sy);
       p.bezierCurveTo(cx - 1.0 * sx, cy + 0.15 * sy, cx - 0.85 * sx, cy - 0.95 * sy, cx, cy - 0.25 * sy);
       p.bezierCurveTo(cx + 0.85 * sx, cy - 0.95 * sy, cx + 1.0 * sx, cy + 0.15 * sy, cx, cy + 0.85 * sy);
@@ -562,7 +667,8 @@
       const p = heartPathInCanvas(w, h);
       heartParticles = [];
       let guard = 0;
-      while (heartParticles.length < 750 && guard < 100000) {
+      const target = Math.max(320, Math.min(1200, Math.floor((w * h) / 380)));
+      while (heartParticles.length < target && guard < 100000) {
         guard++;
         const x = Math.random() * w;
         const y = Math.random() * h;
@@ -570,12 +676,13 @@
           heartParticles.push({
             x: x,
             y: y,
-            r: 0.8 + Math.random() * 1.6,
+            r: 0.9 + Math.random() * 1.8,
             phase: Math.random() * Math.PI * 2,
             color: particleColors[Math.floor(Math.random() * particleColors.length)]
           });
         }
       }
+      heartParticles.sort((a, b) => a.color.localeCompare(b.color));
     }
 
     function resizeHeartCanvas() {
@@ -591,12 +698,17 @@
       const w = heartCanvas.width;
       const h = heartCanvas.height;
       hctx.clearRect(0, 0, w, h);
+
+      let lastColor = "";
       for (const p of heartParticles) {
         const a = 0.3 + 0.65 * (0.5 + 0.5 * Math.sin(t / 500 + p.phase));
         const jx = Math.sin(t / 900 + p.phase) * 0.8;
         const jy = Math.cos(t / 700 + p.phase * 1.3) * 0.8;
         hctx.globalAlpha = a;
-        hctx.fillStyle = p.color;
+        if (p.color !== lastColor) {
+          hctx.fillStyle = p.color;
+          lastColor = p.color;
+        }
         hctx.beginPath();
         hctx.arc(p.x + jx, p.y + jy, p.r, 0, Math.PI * 2);
         hctx.fill();
@@ -671,31 +783,88 @@
     shootBiu();
     setInterval(shootBiu, 1400);
 
-    // 发送祝福语，完整显示并飘在屏幕上
-    const sendBtn = document.getElementById("send");
-    const select = document.getElementById("blessing");
-    const custom = document.getElementById("custom");
+    // 顶部文字依次出现：不同动画 + 粒子迸发
+    const headline = document.getElementById("headline");
+    const text = "某天 我也会成为你轻描淡写的一页";
+    const baseDelay = 2.7;
+    const stagger = 0.22;
 
-    function sendBlessing() {
-      const text = (custom.value.trim() || select.value).trim();
-      if (!text) return;
-
-      const el = document.createElement("div");
-      el.className = "blessing-float";
-      el.textContent = text;
-      el.style.setProperty("--sx", (8 + Math.random() * 68) + "vw");
-      el.style.setProperty("--dx", (Math.random() * 260 - 130) + "px");
-      el.style.setProperty("--dur", (6 + Math.random() * 4) + "s");
-      el.style.setProperty("--size", (14 + Math.random() * 8) + "px");
-      document.body.appendChild(el);
-      el.addEventListener("animationend", () => el.remove());
-
-      custom.value = "";
+    function spawnSparks(seg) {
+      const rect = seg.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const colors = ["#ff4d6d", "#ff8fa3", "#ffb3c1", "#ffd6e0", "#ffffff", "#ff5c77"];
+      const count = 10;
+      for (let i = 0; i < count; i++) {
+        const spark = document.createElement("span");
+        spark.className = "spark";
+        const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+        const dist = 32 + Math.random() * 55;
+        const size = 2 + Math.random() * 5;
+        spark.style.left = cx + "px";
+        spark.style.top = cy + "px";
+        spark.style.setProperty("--dx", (Math.cos(angle) * dist).toFixed(1) + "px");
+        spark.style.setProperty("--dy", (Math.sin(angle) * dist).toFixed(1) + "px");
+        spark.style.setProperty("--size", size.toFixed(1) + "px");
+        spark.style.setProperty("--dur", (0.7 + Math.random() * 0.8).toFixed(2) + "s");
+        spark.style.setProperty("--delay", (Math.random() * 0.2).toFixed(2) + "s");
+        spark.style.setProperty("--color", colors[Math.floor(Math.random() * colors.length)]);
+        document.body.appendChild(spark);
+        spark.addEventListener("animationend", () => spark.remove());
+      }
     }
 
-    sendBtn.addEventListener("click", sendBlessing);
-    custom.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") sendBlessing();
+    let charIndex = 0;
+    Array.from(text).forEach((ch) => {
+      if (ch === " ") {
+        const space = document.createElement("span");
+        space.className = "space";
+        space.textContent = " ";
+        headline.appendChild(space);
+        return;
+      }
+
+      const delay = baseDelay + charIndex * stagger;
+      const seg = document.createElement("span");
+      seg.className = "seg";
+      seg.textContent = ch;
+      seg.style.setProperty("--delay", delay.toFixed(2) + "s");
+      headline.appendChild(seg);
+      setTimeout(() => spawnSparks(seg), delay * 1000 + 240);
+      charIndex++;
+    });
+
+    const headlineBottom = document.getElementById("headline-bottom");
+    const bottomText = "可我会把你 写进余生的每一页";
+    const bottomBaseDelay = 4.4;
+    const bottomStagger = 0.22;
+    let bottomCharIndex = 0;
+    Array.from(bottomText).forEach((ch) => {
+      if (ch === " ") {
+        const space = document.createElement("span");
+        space.className = "space";
+        space.textContent = " ";
+        headlineBottom.appendChild(space);
+        return;
+      }
+
+      const delay = bottomBaseDelay + bottomCharIndex * bottomStagger;
+      const seg = document.createElement("span");
+      seg.className = "seg";
+      seg.textContent = ch;
+      seg.style.setProperty("--delay", delay.toFixed(2) + "s");
+      headlineBottom.appendChild(seg);
+      setTimeout(() => spawnSparks(seg), delay * 1000 + 240);
+      bottomCharIndex++;
+    });
+
+    const heartText = document.getElementById("heart-text");
+    Array.from("祈愿冰雪无忧").forEach((ch, i) => {
+      const span = document.createElement("span");
+      span.className = "heart-char";
+      span.textContent = ch;
+      span.style.setProperty("--d", (2.2 + i * 0.18).toFixed(2) + "s");
+      heartText.appendChild(span);
     });
   </script>
 </body>
